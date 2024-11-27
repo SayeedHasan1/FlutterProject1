@@ -5,7 +5,7 @@ import 'package:fluttertest23/Views/register_view.dart';
 import 'package:fluttertest23/Views/verify_email_view.dart';
 import 'package:fluttertest23/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'dart:developer' as devtools show log;
+//import 'dart:developer' as devtools show log;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +19,7 @@ void main() {
       routes: {
         '/login/': (context) => const LoginView(),
         '/register/': (context) => const RegisterView(),
+        '/notes/': (context) => const NotesView(),
       },
     ),
   );
