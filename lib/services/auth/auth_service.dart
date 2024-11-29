@@ -1,10 +1,12 @@
 import 'package:fluttertest23/services/auth/auth_user.dart';
 import 'package:fluttertest23/services/auth/auth_provider.dart';
+import 'package:fluttertest23/services/auth/firebase_auth_provider.dart';
 
 class AuthService implements AuthProvider {
   final AuthProvider provider;
 
   AuthService(this.provider);
+  factory AuthService.firebase() => AuthService(FirebaseAuthProvider());
 
   @override
   Future<AuthUser> createUser({
@@ -17,7 +19,6 @@ class AuthService implements AuthProvider {
       );
 
   @override
-  // TODO: implement currentUser
   AuthUser? get currentUser => provider.currentUser;
 
   @override
@@ -31,14 +32,11 @@ class AuthService implements AuthProvider {
       );
 
   @override
-  Future<void> logOut() {
-    // TODO: implement logOut
-    throw UnimplementedError();
-  }
+  Future<void> logOut() => provider.logOut();
 
   @override
-  Future<void> sendEmailVerification() {
-    // TODO: implement sendEmailVerification
-    throw UnimplementedError();
-  }
+  Future<void> sendEmailVerification() => provider.sendEmailVerification();
+
+  @override
+  Future<void> initialize() => provider.initialize();
 }
