@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertest23/constants/routes.dart';
 import 'package:fluttertest23/services/auth/auth_exceptions.dart';
 import 'package:fluttertest23/services/auth/auth_service.dart';
-import 'package:fluttertest23/utilities/showerrordialogue.dart';
+import 'package:fluttertest23/utilities/dialog/error_dialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -74,17 +74,17 @@ class _LoginViewState extends State<LoginView> {
                     );
                   }
                 } on UserNotFoundAuthException {
-                  await showErrorDialogue(
+                  await showErrorDialog(
                     context,
                     'User not found',
                   );
                 } on WrongPasswordAuthException {
-                  await showErrorDialogue(
+                  await showErrorDialog(
                     context,
                     'Wrong Password',
                   );
                 } on GenericAuthException {
-                  await showErrorDialogue(
+                  await showErrorDialog(
                     context,
                     "Authentication Error",
                   );

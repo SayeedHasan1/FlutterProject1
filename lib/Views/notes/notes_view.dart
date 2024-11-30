@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertest23/Views/notes/notes_list_view.dart';
 import 'package:fluttertest23/constants/routes.dart';
 import 'package:fluttertest23/enums/menu_action.dart';
 import 'package:fluttertest23/services/auth/auth_service.dart';
 import 'package:fluttertest23/services/crud/notes_service.dart';
+import 'package:fluttertest23/utilities/dialog/logout_dialog.dart';
 
 class NotesView extends StatefulWidget {
   const NotesView({super.key});
@@ -29,7 +31,7 @@ class _NotesViewState extends State<NotesView> {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.of(context).pushNamed(newNoteRoute);
+              Navigator.of(context).pushNamed(createOrUpdateNoteRoute);
             },
             icon: const Icon(Icons.add),
           ),
@@ -37,7 +39,7 @@ class _NotesViewState extends State<NotesView> {
             onSelected: (value) async {
               switch (value) {
                 case MenuAction.logout:
-                  final shouldlogout = await showLogOutDialogue(context);
+                  final shouldlogout = await showLogOutDialog(context);
                   if (shouldlogout) {
                     await AuthService.firebase().logOut();
                     Navigator.of(context).pushNamedAndRemoveUntil(
@@ -71,57 +73,31 @@ class _NotesViewState extends State<NotesView> {
                     case ConnectionState.active:
                       if (snapshot.hasData) {
                         final allNotes = snapshot.data as List<DatabaseNote>;
-                        print(allNotes);
-                        return ListView.builder(
-                          itemCount: allNotes.length,
-                          itemBuilder: (context, index) {
-                            final note = allNotes[index];
-                            return ListTile(
-                              title: Text(
-                                note.text,
-                                maxLines: 1,
-                                softWrap: true,
-                              ),
+                        return NoteslistView(
+                          onDeleteNote: (note) async {
+                            await _noteService.deleteNote(id: note.id);
+                          },
+                          notes: allNotes,
+                          onTap: (DatabaseNote note) {
+                            Navigator.of(context).pushNamed(
+                              createOrUpdateNoteRoute,
+                              arguments: note,
                             );
                           },
                         );
                       } else {
-                        return const Text('Something is wrong.');
+                        return const CircularProgressIndicator();
                       }
                     default:
-                      return const Text('What is wrong?');
+                      return const CircularProgressIndicator();
                   }
                 },
               );
             default:
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
           }
         },
       ),
     );
   }
-}
-
-Future<bool> showLogOutDialogue(BuildContext context) {
-  return showDialog<bool>(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text('Log Out'),
-        content: const Text('Are you sure you want to Log out?'),
-        actions: [
-          TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-              child: const Text('Cancel')),
-          TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-              child: const Text('Log Out')),
-        ],
-      );
-    },
-  ).then((value) => value ?? false);
 }
