@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:fluttertest23/extentions/list/filter.dart';
 import 'package:fluttertest23/services/crud/crud_exceptions.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' show join;
@@ -7,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 
 class NoteService {
   Database? _db;
+  DatabaseUser? _user;
 
   List<DatabaseNote> _notes = [];
   static final NoteService _shared = NoteService._sharedInstances();
@@ -22,14 +24,31 @@ class NoteService {
 
   late final StreamController<List<DatabaseNote>> _noteStreamController;
 
-  Stream<List<DatabaseNote>> get allNotes => _noteStreamController.stream;
+  Stream<List<DatabaseNote>> get allNotes =>
+      _noteStreamController.stream.filter((note) {
+        final currentuser = _user;
+        if (currentuser != null) {
+          return note.userId == currentuser.id;
+        } else {
+          throw UserShouldBeSetBeforeReadingAllNotesException();
+        }
+      });
 
-  Future<DatabaseUser> getOrCreateUser({required String email}) async {
+  Future<DatabaseUser> getOrCreateUser({
+    required String email,
+    bool setAsCurrentUser = true,
+  }) async {
     try {
       final user = await getUser(email: email);
+      if (setAsCurrentUser) {
+        _user = user;
+      }
       return user;
     } on CouldNotFindUserException {
       final createdUser = await createUser(email: email);
+      if (setAsCurrentUser) {
+        _user = createdUser;
+      }
       return createdUser;
     } catch (e) {
       rethrow;
@@ -52,10 +71,15 @@ class NoteService {
     await getNote(id: note.id);
 
     //Update note
-    final updateCount = await db.update(noteTable, {
-      textColumn: text,
-      isSyncedWithCloudColumn: 0,
-    });
+    final updateCount = await db.update(
+      noteTable,
+      {
+        textColumn: text,
+        isSyncedWithCloudColumn: 0,
+      },
+      where: 'id =?',
+      whereArgs: [note.id],
+    );
     if (updateCount == 0) {
       throw CouldNotUpdateNoteException();
     } else {
