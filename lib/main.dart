@@ -10,7 +10,6 @@ import 'package:fluttertest23/services/auth/bloc/auth_block.dart';
 import 'package:fluttertest23/services/auth/bloc/auth_event.dart';
 import 'package:fluttertest23/services/auth/bloc/auth_state.dart';
 import 'package:fluttertest23/services/auth/firebase_auth_provider.dart';
-
 //import 'dart:developer' as devtools show log;
 
 void main() {
