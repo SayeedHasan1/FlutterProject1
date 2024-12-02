@@ -33,6 +33,7 @@ class _NotesViewState extends State<NotesView> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Your Notes'),
+        centerTitle: true,
         actions: [
           IconButton(
             onPressed: () {

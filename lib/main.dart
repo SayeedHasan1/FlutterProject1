@@ -19,6 +19,10 @@ void main() {
     MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.blueAccent,
+          iconTheme: IconThemeData(color: Colors.white),
+        ),
         primarySwatch: Colors.blue,
       ),
       home: BlocProvider<AuthBloc>(
