@@ -19,11 +19,12 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Verify your Email'),
+        centerTitle: true,
       ),
       body: Column(
         children: [
           const Text(
-              "We've sent an email verification message.Please open it to veruify your account"),
+              "We've sent an email verification message.Please open it to verify your account"),
           const Text(
               "If you havn't recieved the email yet, press the button below."),
           TextButton(
